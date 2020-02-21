@@ -12,6 +12,7 @@ Experiment with :
 - <a href="https://en.wikipedia.org/wiki/Bean_Scripting_Framework">Bean scripting</a>
 - <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a>
 
-to build a framework
+The whole picture : 
 
 ![./doc/framework/FrameworkDescription.svg](./doc/framework/FrameworkDescription.svg)
+
