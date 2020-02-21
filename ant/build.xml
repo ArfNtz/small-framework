@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<project name="framework" default="packJar" basedir="..">
+		
+		<!-- ************************************************************************************************************ -->
+		<!-- *                                             VARIABLES DE BUILD                                           * -->
+		<!-- ************************************************************************************************************ -->
+	
+	<!-- GLOBAL -->
+	<property name="encoding" 				value="ISO-8859-15" />
+	
+	<!-- Framework -->
+	<property name="fmkBuildDir" 		location="build/"/>								<!-- Répertoire de destination des builds -->
+	<property name="fmkBinariesDir" 	location="bin"/>								<!-- Répertoire de destination des classes compilées -->
+	<property name="fmkJAR" 			location="${fmkBuildDir}/framework.jar"/>				<!-- JAR de destination -->
+	
+	<!-- OBFUSCATION -->
+	<property name="yguardPath" 		location="${basedir}/lib/yguard.jar" />
+	<property name="fmkObfuscatedJAR" 	location="${fmkBuildDir}/framework.jar"/>				<!-- JAR de destination (obf) -->
+	
+	
+		<!-- ************************************************************************************************************ -->
+		<!-- *                                                   Framework                                                    * -->
+		<!-- ************************************************************************************************************ -->
+	
+	<target name="packJar" description="Packaging des classes au format JAR.">	
+		<mkdir dir="${fmkBuildDir}"/>
+		
+		<attrib file="${fmkJAR}" readonly="false" />
+		<delete file="${fmkJAR}" />
+		<jar jarfile="${fmkJAR}" basedir="${fmkBinariesDir}" encoding="${encoding}" />
+	</target>
+	
+	<target name="packJarObfuscated" depends="packJar" description="Packaging des classes au format JAR (obfusqué).">		
+		<taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${yguardPath}" />
+		<yguard>
+			<inoutpair in="${fmkJAR}" out="${fmkObfuscatedJAR}" />
+			<rename mainclass="fr.toyframework.">
+				<keep>
+					<class classes="public" methods="public" fields="public">
+						<patternset>
+							<include name="fr.toyframework.*" />
+							<include name="fr.toyframework.*" />
+						</patternset>
+					</class>
+					<field name="serialVersionUID">
+						<patternset>
+							<include name="fr.toyframework."/>
+						</patternset>
+					</field>
+					
+					<class classes="private" methods="private" fields="private">
+						<patternset>
+							<include name="fr.toyframework.**.*" />
+						</patternset>
+					</class>
+				</keep>
+			</rename>
+		</yguard>
+		
+		<delete file="${fmkJAR}" />
+		<move file="${fmkObfuscatedJAR}" tofile="${fmkJAR}" />
+	</target>	
+</project>
